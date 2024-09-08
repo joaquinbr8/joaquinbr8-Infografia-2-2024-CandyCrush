@@ -1,0 +1,96 @@
+[gd_scene load_steps=8 format=3 uid="uid://cruh8bbcfvyvr"]
+
+[ext_resource type="Texture2D" uid="uid://brp4euwugc18f" path="res://assets/background.png" id="1_blg2x"]
+[ext_resource type="PackedScene" uid="uid://bt33j5dwxano3" path="res://scenes/top_ui.tscn" id="2_wrbvl"]
+[ext_resource type="Texture2D" uid="uid://cdunkljd6up72" path="res://assets/bottom_ui.png" id="3_jy0d4"]
+[ext_resource type="Script" path="res://scripts/grid.gd" id="4_4jr62"]
+[ext_resource type="Script" path="res://scripts/bottom_ui.gd" id="4_5vkd2"]
+[ext_resource type="FontFile" uid="uid://b25431rxog83j" path="res://assets/fonts/Kenney Blocks.ttf" id="4_o5de7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xmb3g"]
+font = ExtResource("4_o5de7")
+font_size = 32
+
+[node name="Game" type="Node2D"]
+
+[node name="background" type="TextureRect" parent="."]
+offset_right = 576.0
+offset_bottom = 1024.0
+texture = ExtResource("1_blg2x")
+
+[node name="top_ui" parent="." instance=ExtResource("2_wrbvl")]
+
+[node name="bottom_ui" type="TextureRect" parent="."]
+offset_top = 928.0
+offset_right = 576.0
+offset_bottom = 1020.0
+texture = ExtResource("3_jy0d4")
+script = ExtResource("4_5vkd2")
+
+[node name="MarginContainer" type="MarginContainer" parent="bottom_ui"]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 6.0
+offset_right = 566.0
+offset_bottom = 57.0
+
+[node name="VBoxContainer3" type="HBoxContainer" parent="bottom_ui/MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="bottom_ui/MarginContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="CheckButton" type="CheckButton" parent="bottom_ui/MarginContainer/VBoxContainer3/VBoxContainer2"]
+layout_mode = 2
+text = "NIVEL:"
+icon_alignment = 1
+
+[node name="VBoxContainer3" type="VBoxContainer" parent="bottom_ui/MarginContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="bottom_ui/MarginContainer/VBoxContainer3/VBoxContainer3"]
+layout_mode = 2
+text = "                                         "
+
+[node name="VBoxContainer" type="VBoxContainer" parent="bottom_ui/MarginContainer/VBoxContainer3"]
+layout_mode = 2
+
+[node name="state_game" type="Label" parent="bottom_ui/MarginContainer/VBoxContainer3/VBoxContainer"]
+layout_mode = 2
+text = "COLORFULL ^-^"
+label_settings = SubResource("LabelSettings_xmb3g")
+horizontal_alignment = 1
+
+[node name="grid" type="Node2D" parent="."]
+script = ExtResource("4_4jr62")
+width = 8
+height = 10
+x_start = 64
+y_start = 800
+offset = 64
+y_offset = 2
+
+[node name="destroy_timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="collapse_timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="refill_timer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="finish_game" from="top_ui" to="bottom_ui" method="_on_top_ui_finish_game"]
+[connection signal="finish_game" from="top_ui" to="grid" method="_on_top_ui_finish_game"]
+[connection signal="send_end_game_mode" from="top_ui" to="grid" method="_on_top_ui_send_end_game_mode"]
+[connection signal="win_game" from="top_ui" to="bottom_ui" method="_on_top_ui_win_game"]
+[connection signal="win_game" from="top_ui" to="grid" method="_on_top_ui_win_game"]
+[connection signal="button_on_pressed" from="bottom_ui" to="top_ui" method="_on_bottom_ui_button_on_pressed"]
+[connection signal="can_change_game_mode" from="grid" to="bottom_ui" method="_on_grid_can_change_game_mode"]
+[connection signal="increase_points" from="grid" to="top_ui" method="_on_grid_increase_points"]
+[connection signal="reduce_attemps" from="grid" to="top_ui" method="_on_grid_reduce_attemps"]
+[connection signal="timeout" from="destroy_timer" to="grid" method="_on_destroy_timer_timeout"]
+[connection signal="timeout" from="collapse_timer" to="grid" method="_on_collapse_timer_timeout"]
+[connection signal="timeout" from="refill_timer" to="grid" method="_on_refill_timer_timeout"]
